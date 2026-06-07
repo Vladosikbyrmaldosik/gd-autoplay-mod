@@ -9,9 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: geode-sdk/build-geode-mod@main
+        id: build
         with:
           sdk: nightly
       - uses: actions/upload-artifact@v4
         with:
           name: AutoPlayer.geode
-          path: "*.geode"
+          path: ${{ steps.build.outputs.build-output }}
