@@ -6,34 +6,34 @@ using namespace geode::prelude;
 static bool g_autoEnabled = false;
 static bool g_wasInAir    = false;
 
-static bool obstacleAhead(PlayerObject* player, PlayLayer* layer) {
-    if (!player || !layer) return false;
-    float px = player->getPositionX();
-    float py = player->getPositionY();
-    CCRect zone(px + 5.f, py - 15.f, 60.f, 30.f);
-    auto objs = layer->m_objects;
-    for (int i = 0; i < (int)objs->count(); i++) {
-        auto obj = static_cast<GameObject*>(objs->objectAtIndex(i));
-        if (!obj || !obj->isVisible()) continue;
-        int t = (int)obj->m_objectType;
-        if (t == 0 || t >= 6) continue;
-        if (zone.intersectsRect(obj->boundingBox())) return true;
-    }
-    return false;
-}
-
 class $modify(MyPlayLayer, PlayLayer) {
+
     void update(float dt) {
         PlayLayer::update(dt);
         if (!g_autoEnabled) return;
-        auto* p = m_player1;
-        if (!p || m_isDead || m_hasCompletedLevel) return;
-        bool danger = obstacleAhead(p, this);
+        if (!m_player1 || m_isDead || m_hasCompletedLevel) return;
+
+        float px = m_player1->getPositionX();
+        float py = m_player1->getPositionY();
+        bool danger = false;
+
+        CCRect zone(px + 5.f, py - 15.f, 60.f, 30.f);
+        for (int i = 0; i < (int)m_objects->count(); i++) {
+            auto obj = static_cast<GameObject*>(m_objects->objectAtIndex(i));
+            if (!obj || !obj->isVisible()) continue;
+            int t = (int)obj->m_objectType;
+            if (t == 0 || t >= 6) continue;
+            if (zone.intersectsRect(obj->boundingBox())) {
+                danger = true;
+                break;
+            }
+        }
+
         if (danger && !g_wasInAir) {
-            this->pushButton(0, true);
+            this->handleButton(true, (int)PlayerButton::Jump, true);
             g_wasInAir = true;
         } else if (!danger && g_wasInAir) {
-            this->releaseButton(0, true);
+            this->handleButton(false, (int)PlayerButton::Jump, true);
             g_wasInAir = false;
         }
     }
