@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 jobs:
-  build:
+  build-android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,7 +12,8 @@ jobs:
         id: build
         with:
           sdk: nightly
+          target: android64
       - uses: actions/upload-artifact@v4
         with:
-          name: AutoPlayer.geode
+          name: AutoPlayer-android
           path: ${{ steps.build.outputs.build-output }}
