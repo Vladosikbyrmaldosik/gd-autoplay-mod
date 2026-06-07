@@ -1,13 +1,12 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/PlayLayer.hpp>
-#include <Geode/modify/GJBaseGameLayer.hpp>
 
 using namespace geode::prelude;
 
 static bool g_autoEnabled = false;
 static bool g_wasInAir    = false;
 
-static bool obstacleAhead(PlayerObject* player, GJBaseGameLayer* layer) {
+static bool obstacleAhead(PlayerObject* player, PlayLayer* layer) {
     if (!player || !layer) return false;
     float px = player->getPositionX();
     float py = player->getPositionY();
@@ -16,15 +15,16 @@ static bool obstacleAhead(PlayerObject* player, GJBaseGameLayer* layer) {
     for (int i = 0; i < (int)objs->count(); i++) {
         auto obj = static_cast<GameObject*>(objs->objectAtIndex(i));
         if (!obj || !obj->isVisible()) continue;
-        if ((int)obj->m_objectType == 0 || (int)obj->m_objectType >= 6) continue;
+        int t = (int)obj->m_objectType;
+        if (t == 0 || t >= 6) continue;
         if (zone.intersectsRect(obj->boundingBox())) return true;
     }
     return false;
 }
 
-class $modify(MyGameLayer, GJBaseGameLayer) {
+class $modify(MyPlayLayer, PlayLayer) {
     void update(float dt) {
-        GJBaseGameLayer::update(dt);
+        PlayLayer::update(dt);
         if (!g_autoEnabled) return;
         auto* p = m_player1;
         if (!p || m_isDead || m_hasCompletedLevel) return;
@@ -37,9 +37,7 @@ class $modify(MyGameLayer, GJBaseGameLayer) {
             g_wasInAir = false;
         }
     }
-};
 
-class $modify(MyPlayLayer, PlayLayer) {
     void resetLevel() {
         PlayLayer::resetLevel();
         g_wasInAir = false;
