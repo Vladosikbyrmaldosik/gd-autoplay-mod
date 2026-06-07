@@ -4,32 +4,20 @@ on:
     branches: [main]
   workflow_dispatch:
 jobs:
-  build-android32:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [android32, android64]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: geode-sdk/build-geode-mod@main
+      - uses: geode-sdk/build-geode-mod@v2
         id: build
         with:
           sdk: nightly
-          platform: android32
+          target: ${{ matrix.target }}
       - uses: actions/upload-artifact@v4
         with:
-          name: AutoPlayer-android32
+          name: AutoPlayer-${{ matrix.target }}
           path: ${{ steps.build.outputs.build-output }}
-          if-no-files-found: warn
-
-  build-android64:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: geode-sdk/build-geode-mod@main
-        id: build
-        with:
-          sdk: nightly
-          platform: android64
-      - uses: actions/upload-artifact@v4
-        with:
-          name: AutoPlayer-android64
-          path: ${{ steps.build.outputs.build-output }}
-          if-no-files-found: warn
