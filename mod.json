@@ -1,9 +1,11 @@
 {
-    "geode": "5.7.1",
-    "gd": {"win": "2.2081", "android": "2.2081"},
+    "geode": "v5.7.1",
+    "gd": {
+        "android": "2.2081"
+    },
     "id": "myname.autoplayer",
     "name": "Auto Player",
     "version": "1.0.0",
     "developer": "myname",
-    "description": "Автоматично проходить рівні GD"
+    "description": "Автоматично проходить рівні Geometry Dash"
 }
