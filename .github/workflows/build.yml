@@ -12,7 +12,7 @@ jobs:
         id: build
         with:
           sdk: nightly
-          target: android64
+          platform: android64
       - uses: actions/upload-artifact@v4
         with:
           name: AutoPlayer-android
